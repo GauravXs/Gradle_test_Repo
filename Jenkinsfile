@@ -19,7 +19,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             TC_webapp_dir = '/opt/tomcat/webapps'
             TC_war_file_path = "\${TC_webapp_dir}/*.war"
             //mavenHome = tool 'jenkins-maven'
-            github_repo_url = 'https://github.com/gauravxs/gradle-simple.git'
+            github_repo_url = 'https://github.com/GauravXs/Gradle_test_Repo.git'
         }
 
         stages {
@@ -49,7 +49,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                 steps {
                     script {
                         sh 'echo "Pulling from Github Repo"'
-                        checkout([$class: 'GitSCM', branches: [[name: '*/master']],
+                        checkout([$class: 'GitSCM', branches: [[name: '*/main']],
                         doGenerateSubmoduleConfigurations: false, extensions: [],
                         submoduleCfg: [],
                         userRemoteConfigs: [[url: "$github_repo_url"]]])
