@@ -18,8 +18,42 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             backup_dir = '/backup'
             TC_webapp_dir = '/opt/tomcat/webapps'
             TC_war_file_path = "\${TC_webapp_dir}/*.war"
-            //mavenHome = tool 'jenkins-maven'
             github_repo_url = 'https://github.com/GauravXs/Gradle_test_Repo.git'
+
+            //Variables for Sonarqube Server
+            sonarqube_ip = '10.1.1.46' //Only IPv4 and no need to add http:// or https://
+            sonarqube_port = '9000'
+            sonar_login_token = 'sqp_591f4484ef046aaefaa75e7c0d49300d5c4534ed'
+            sonar_project_key = 'MavenPipeLine'
+
+            //Variables for Nexus Server
+            NEXUS_VERSION = 'nexus3'
+            NEXUS_PROTOCOL = 'http'
+            NEXUS_IP = '10.1.1.46' //Only IPv4 and no need to add http:// or https://
+            NEXUS_PORT = '8081'
+            NEXUS_URL = '10.1.1.46:8081'
+            NEXUS_REPOSITORY = 'in28Minutes-first-webapp'
+            NEXUS_CREDENTIAL_ID = 'nexus_cred'
+            ARTIFACT_VERSION = '\${BUILD_NUMBER}'
+
+            //E-MAIL Variables
+            REPLYTO_NAME = 'gourav.singh@mobicule.com'
+            RECIPIENTS_NAME = 'gourav.singh@mobicule.com'
+
+            PASS_SUBJECT = '\${DEFAULT_SUBJECT}'
+            PASS_CONTENT = 'Jenkins Pipeline Build \${BUILD_NUMBER} Passed Successfully \n \${DEFAULT_CONTENT}'
+            UNSTABLE_SUBJECT = '\${DEFAULT_SUBJECT}'
+            UNSTABLE_CONTENT = 'Jenkins Pipeline Build ${BUILD_NUMBER} is UNSTABLE \${DEFAULT_CONTENT}'
+            FAIL_SUBJECT = '\${DEFAULT_SUBJECT}'
+            FAIL_CONTENT = 'Jenkins Pipeline Build \${BUILD_NUMBER} FAILED... Attention Required! \${DEFAULT_CONTENT}'
+
+            //DEFAULT_SUBJECT = 'Default Subject'
+            //DEFAULT_CONTENT = 'Default Content'
+            DEFAULT_REPLYTO = 'Gourav.singh@mobicule.com'
+
+            useSonar = 'false'
+            useNexus = 'false'
+            javaDeploy = 'Java17'
         }
 
         stages {
@@ -32,8 +66,25 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                             git ls-remote --exit-code \${github_repo_url} || (echo "GitHub repository is not reachable, exiting." && exit 1)
                             echo "GitHub repository is reachable. Proceeding with the pipeline."
                         """
+
+                        if (useSonar == 'true') {
+                        // Check SonarQube Server availability
+                        sh """
+                            echo "Checking SonarQube availability..."
+                            nc -zv -w5 \${sonarqube_ip} \${sonarqube_port} || (echo "SonarQube is not reachable on http://\${sonarqube_ip}:\${sonarqube_port}, exiting." && exit 1)
+                            echo "SonarQube Server is reachable. Continuing with Test"
+                        """
+                        }
+                        if (useNexus == 'true') {
+                        // Check Nexus Repo Server availability
+                        sh """
+                            echo "Checking SonarQube availability..."
+                            nc -zv -w5 \${NEXUS_IP} \${NEXUS_PORT} || (echo "Nexus Repo Server is not reachable on http://\${NEXUS_IP}:\${NEXUS_PORT}, exiting." && exit 1)
+                            echo "Nexus Repo Server is reachable. Proceeding with the pipeline."
+                        """
                     }
                 }
+            }
             }
 
             stage('Clean Workspace') {
@@ -57,6 +108,25 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                 }
             }
 
+            stage('SonarQube Analysis') {
+                when {
+                    expression { useSonar == 'true' }
+                }
+                steps {
+                    script {
+                        sh """
+                            echo "Running SonarQube analysis..."
+                            cd \${JENKINS_HOME}/workspace/\${JOB_NAME}
+
+                            mvn clean verify sonar:sonar \
+                                -Dsonar.projectKey=\$sonar_project_key \
+                                -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} \
+                                -Dsonar.login=\${sonar_login_token}
+                        """
+                    }
+                }
+            }
+
             stage('Build') {
                 steps {
                     script {
@@ -65,6 +135,46 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                         echo "Building Project Artifact using Gradle"
                         sh "./gradlew clean build"
                         sh "ls -lah ${JENKINS_HOME}/workspace/${JOB_NAME}/build/libs"
+                    }
+                }
+            }
+
+            stage('Publish to Nexus') {
+                when {
+                    expression { useSonar == 'true' }
+                }
+                steps {
+                    script {
+                        pom = readMavenPom file: 'pom.xml'
+                        filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                        echo "\${filesByGlob[0].name} \${filesByGlob[0].path} \${filesByGlob[0].directory} \${filesByGlob[0].length} \${filesByGlob[0].lastModified}"
+                        if (filesByGlob) {
+                            artifactPath = filesByGlob[0].path
+                            artifactExists = fileExists artifactPath
+                            if (artifactExists) {
+                                echo "*** File: \${artifactPath}, group: \${pom.groupId}, packaging: \${pom.packaging}, version \${pom.version}"
+
+                                nexusArtifactUploader(
+                                nexusVersion: NEXUS_VERSION,
+                                protocol: NEXUS_PROTOCOL,
+                                nexusUrl: NEXUS_URL,
+                                groupId: pom.groupId,
+                                version: ARTIFACT_VERSION,
+                                repository: NEXUS_REPOSITORY,
+                                credentialsId: NEXUS_CREDENTIAL_ID,
+                                artifacts: [
+                                    [artifactId: pom.artifactId,
+                                    classifier: '',
+                                    file: artifactPath,
+                                    type: pom.packaging]
+                                ]
+                            )
+                            } else {
+                                error "*** File: \${artifactPath}, could not be found"
+                            }
+                        } else {
+                            error '*** No files found matching the specified pattern.'
+                        }
                     }
                 }
             }
@@ -86,14 +196,14 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             stage('Backup') {
                 steps {
                     script {
-                        new_war_file = sh(script: 'basename ${JENKINS_HOME}/workspace/\${JOB_NAME}/target/*.war', returnStdout: true).trim()
+                        new_war_file = sh(script: 'basename ${JENKINS_HOME}/workspace/\${JOB_NAME}/build/libs/*.war', returnStdout: true).trim()
                         echo "New WAR file: ${new_war_file}"
                         env.NEW_WAR_FILE = new_war_file
                         echo "Value for new_war_file -> $new_war_file"
 
                         sh """
                     echo "Content of target dir -> "
-                    ls -lah \${JENKINS_HOME}/workspace/\${JOB_NAME}/target/
+                    ls -lah \${JENKINS_HOME}/workspace/\${JOB_NAME}/build/libs/
 
                     if ls ${TC_war_file_path} 1> /dev/null 2>&1; then
 
@@ -132,7 +242,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                     script {
                         sh '''
                             echo "Copying new WAR file to Tomcat..."
-                            cp \${JENKINS_HOME}/workspace/\${JOB_NAME}/target/*.war \${TC_webapp_dir}
+                            cp \${JENKINS_HOME}/workspace/\${JOB_NAME}/build/libs/*.war \${TC_webapp_dir}
                             sleep 5
                             sudo chown -R tomcat:tomcat \${TC_webapp_dir}
                         '''

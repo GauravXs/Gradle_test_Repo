@@ -22,6 +22,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+war {
+    enabled = false
+}
+
+bootWar {
+    enabled = true
+    launchScript()
+    manifest {
+        attributes 'Implementation-Version':  archiveVersion
+    }
+}
+
 tasks.named('bootBuildImage') {
 	builder = 'meshyam88/liberty-test:latest'
 }
