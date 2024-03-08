@@ -7,7 +7,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
 
         tools {
             //maven 'jenkins-maven'
-            gradle 'jenkins-gradle'
+            //gradle 'jenkins-gradle'
             //jdk 'Java11'//, version: '11.0.22'
             jdk 'Java17'//, version: '17.0.10'
             //jdk 'Java8'//, version: '8u392-ga-1'
