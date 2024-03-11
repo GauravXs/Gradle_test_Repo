@@ -267,7 +267,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             always {
                 script {
                     if (currentBuild.currentResult == 'FAILURE') {
-                        //sh 'echo "Build result has changed to FAILURE"'
+                        sh 'echo "Build FAILURE"'
                         emailext subject: "${FAIL_SUBJECT}",
                             body: "${FAIL_CONTENT}",
                             attachLog: true,
@@ -279,7 +279,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                             replyTo: "${DEFAULT_REPLYTO}",
                             to: "${RECIPIENTS_NAME}"
                     } else if (currentBuild.currentResult == 'UNSTABLE') {
-                        //sh 'echo "Build result has changed to UNSTABLE"'
+                        sh 'echo "Build UNSTABLE"'
                         emailext subject: "${UNSTABLE_SUBJECT}",
                             body: "${UNSTABLE_CONTENT}",
                             attachLog: true,
@@ -305,7 +305,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                             to: "${RECIPIENTS_NAME}"
                     //////////////////*/
                     } else {
-                        //sh 'echo "Build result has changed to UNKNOWN"'
+                        sh 'echo "Build UNKNOWN"'
                         emailext subject: "Unknown Build ${BUILD_NUMBER}",
                             body: "Unknown Build ${BUILD_NUMBER} ",
                             attachLog: true,
