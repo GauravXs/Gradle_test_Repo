@@ -23,8 +23,8 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             //Variables for Sonarqube Server
             sonarqube_ip = '10.1.1.46' //Only IPv4 and no need to add http:// or https://
             sonarqube_port = '9000'
-            sonar_login_token = 'sqp_591f4484ef046aaefaa75e7c0d49300d5c4534ed'
-            sonar_project_key = 'MavenPipeLine'
+            sonar_login_token = 'sqp_ed0dadd968e141a3aa87d86d039b01506f843000'
+            sonar_project_key = 'GradlePipeline'
 
             //Variables for Nexus Server
             NEXUS_VERSION = 'nexus3'
@@ -51,8 +51,8 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             //DEFAULT_CONTENT = 'Default Content'
             DEFAULT_REPLYTO = 'Gourav.singh@mobicule.com'
 
-            useSonar = 'false'
-            useNexus = 'false'
+            useSonar = 'true'
+            useNexus = 'true'
             javaDeploy = 'Java17'
         }
 
@@ -118,10 +118,10 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                             echo "Running SonarQube analysis..."
                             cd \${JENKINS_HOME}/workspace/\${JOB_NAME}
 
-                            mvn clean verify sonar:sonar \
-                                -Dsonar.projectKey=\$sonar_project_key \
-                                -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} \
-                                -Dsonar.login=\${sonar_login_token}
+                            ./gradlew sonarqube \
+                            -Dsonar.projectKey=\$sonar_project_key \
+                            -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} \
+                            -Dsonar.login=\${sonar_login_token}
                         """
                     }
                 }
