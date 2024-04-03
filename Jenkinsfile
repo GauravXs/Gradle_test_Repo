@@ -51,8 +51,8 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             //DEFAULT_CONTENT = 'Default Content'
             DEFAULT_REPLYTO = 'Gourav.singh@mobicule.com'
 
-            useSonar = 'false'
-            useNexus = 'false'
+            useSonar = 'true'
+            useNexus = 'true'
             javaDeploy = 'Java17'
         }
 
