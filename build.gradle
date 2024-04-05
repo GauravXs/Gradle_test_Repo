@@ -15,6 +15,14 @@ sonarqube {
     }
 }
 
+sonar {
+    properties {
+        property 'sonar.projectKey', 'GradlePipeline'
+        property 'sonar.organization', 'com.example'
+        property 'sonar.host.url', 'http://10.1.1.46:9000'
+    }
+}
+
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 
