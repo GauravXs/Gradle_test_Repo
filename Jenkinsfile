@@ -115,7 +115,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                 steps {
                     script {
                         echo "Running SonarQube analysis..."
-                        sh "./gradle sonarqube -Dsonar.projectKey=\$sonar_project_key -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} -Dsonar.login=\${sonar_login_token}"
+                        sh "gradle sonarqube -Dsonar.projectKey=\$sonar_project_key -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} -Dsonar.login=\${sonar_login_token}"
                     }
                 }
             }
