@@ -134,7 +134,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
 
             stage('Publish to Nexus') {
                 when {
-                    expression { useSonar == 'true' }
+                    expression { useNexus == 'true' }
                 }
                 steps {
                     script {
