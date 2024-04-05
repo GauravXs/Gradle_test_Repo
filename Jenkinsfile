@@ -8,8 +8,8 @@ def javaVer = ['Java8', 'Java11', 'Java17']
         tools {
             //maven 'jenkins-maven'
             //gradle 'jenkins-gradle'
-            jdk 'Java11'//, version: '11.0.22'
-            //jdk 'Java17'//, version: '17.0.10'
+            //jdk 'Java11'//, version: '11.0.22'
+            jdk 'Java17'//, version: '17.0.10'
             //jdk 'Java8'//, version: '8u392-ga-1'
             //jdk 'Java21'//, version: '21.0.2'
         }
@@ -51,7 +51,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
             //DEFAULT_CONTENT = 'Default Content'
             DEFAULT_REPLYTO = 'Gourav.singh@mobicule.com'
 
-            useSonar = 'true'
+            useSonar = 'false'
             useNexus = 'true'
             javaDeploy = 'Java17'
         }
