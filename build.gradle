@@ -6,22 +6,22 @@ plugins {
 	id 'war'
 }
 
-sonarqube {
-    properties {
-        property 'sonar.sources', 'src/main/java'
-        property 'sonar.tests', 'src/test/java'
-        property 'sonar.java.binaries', 'build/classes/java/main'
-        property 'sonar.test.binaries', 'build/classes/test/java'
-    }
-}
+// sonarqube {
+//     properties {
+//         property 'sonar.sources', 'src/main/java'
+//         property 'sonar.tests', 'src/test/java'
+//         property 'sonar.java.binaries', 'build/classes/java/main'
+//         property 'sonar.test.binaries', 'build/classes/test/java'
+//     }
+// }
 
-sonar {
-    properties {
-        property 'sonar.projectKey', 'GradlePipeline'
-        property 'sonar.organization', 'com.example'
-        property 'sonar.host.url', 'http://10.1.1.46:9000'
-    }
-}
+// sonar {
+//     properties {
+//         property 'sonar.projectKey', 'GradlePipeline'
+//         property 'sonar.organization', 'com.example'
+//         property 'sonar.host.url', 'http://10.1.1.46:9000'
+//     }
+// }
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'

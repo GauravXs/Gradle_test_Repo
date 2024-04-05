@@ -117,6 +117,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                         sh '''
                         java --version
                         javac --version
+                        gradle -version
                         '''
                         echo "Running SonarQube analysis..."
                         sh "./gradlew sonarqube -Dsonar.projectKey=\$sonar_project_key -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} -Dsonar.login=\${sonar_login_token}"
