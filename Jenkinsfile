@@ -7,7 +7,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
 
         tools {
             //maven 'jenkins-maven'
-            //gradle 'jenkins-gradle'
+            gradle 'jenkins-gradle'
             jdk 'Java11'//, version: '11.0.22'
             //jdk 'Java17'//, version: '17.0.10'
             //jdk 'Java8'//, version: '8u392-ga-1'
@@ -115,7 +115,7 @@ def javaVer = ['Java8', 'Java11', 'Java17']
                 steps {
                     script {
                         echo "Running SonarQube analysis..."
-                        sh "./gradlew sonarqube -Dsonar.projectKey=\$sonar_project_key -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} -Dsonar.login=\${sonar_login_token}"
+                        sh "./gradle sonarqube -Dsonar.projectKey=\$sonar_project_key -Dsonar.host.url=http://\${sonarqube_ip}:\${sonarqube_port} -Dsonar.login=\${sonar_login_token}"
                     }
                 }
             }
