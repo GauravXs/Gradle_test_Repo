@@ -1,6 +1,6 @@
 /* groovylint-disable DuplicateStringLiteral */
 def new_war_file = ''
-def javaVer = ['Java8', 'Java11', 'Java17']
+//def javaVer = ['Java8', 'Java11', 'Java17']
 
     pipeline {
         agent any
