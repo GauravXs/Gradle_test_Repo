@@ -17,22 +17,8 @@ repositories {
 	mavenCentral()
 }
 
-// buildscript {
-//     repositories {
-//         maven {
-//             url "https://plugins.gradle.org/m2/"
-//         }
-//     }
-//     dependencies {
-//         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.4.0.2513"
-//     }
-// }
-
-//apply plugin: "org.sonarqube"
-
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	//providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
