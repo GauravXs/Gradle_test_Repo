@@ -1,4 +1,5 @@
 /* groovylint-disable DuplicateStringLiteral */
+//Before Nexus Repo Edit
 def new_war_file = ''
 //def javaVer = ['Java8', 'Java11', 'Java17']
 
